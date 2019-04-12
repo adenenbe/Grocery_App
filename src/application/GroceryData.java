@@ -71,7 +71,7 @@ public class GroceryData {
 		foodsList.sort((p1, p2) -> p1.getCategory().ordinal() - p2.getCategory().ordinal());
 		for (FoodItem item : foodsList) {
 			weights.put(item, 0);
-			returnList.addAll(fibonacciPath(item, 0, pq, weights));
+			returnList.addAll(fibonacciPath(item, pq, weights));
 		}
 		
 		return returnList;
@@ -79,23 +79,23 @@ public class GroceryData {
 		
 	}
 	
-	public List<FoodItem> fibonacciPath(FoodItem item, int weight, Queue<FoodItem> pq, Map<FoodItem, Integer> weights){
+	public List<FoodItem> fibonacciPath(FoodItem item, Queue<FoodItem> pq, Map<FoodItem, Integer> weights){
 		List <FoodItem> returnList = new ArrayList<FoodItem>();
 		Map<FoodItem, Integer> mappedItems = foodsMap.get(item);
 		for (FoodItem mappedItem : mappedItems.keySet()) {
 			if (!weights.containsKey(mappedItem)) {
-				weights.put(mappedItem, weights.get(mappedItem) + weight);
+				weights.put(mappedItem, weights.get(item) + mappedItems.get(mappedItem));
 				pq.add(mappedItem);
 				returnList.add(mappedItem);
 			} else {
-				if (weights.get(mappedItem) > (weights.get(mappedItem) + weight)) {
-					weights.replace(mappedItem, (weights.get(mappedItem) + weight));
+				if (weights.get(mappedItem) > (weights.get(item) + mappedItems.get(mappedItem))) {
+					weights.replace(mappedItem, (weights.get(item) + mappedItems.get(mappedItem)));
 				}
 			}
 			
 		}
 		
-		returnList.addAll(fibonacciPath(pq.peek(), weights.get(pq.remove()), pq, weights));
+		returnList.addAll(fibonacciPath(pq.remove(), pq, weights));
 		returnList.sort((p1, p2) -> mappedItems.get(p1) - mappedItems.get(p2));
 		return returnList;
 		
